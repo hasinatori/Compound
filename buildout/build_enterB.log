@@ -1,0 +1,82 @@
+$ tauri build
+        Info Looking up installed tauri packages to check mismatched versions...
+     Running beforeBuildCommand `pnpm build`
+$ vite build
+vite v8.3.0 building client environment for production...
+transforming...
+22:13:43 [vite-plugin-svelte] src/lib/components/ToolsDialog.svelte:32:22 This reference only captures the initial value of `baseDir`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+30:   let dupRunning = $state(false);
+31:   let dupGroups = $state<DuplicateGroup[]>([]);
+32:   let dupRoot = $state(baseDir);
+                                  ^
+33:   $effect(() => {
+34:     if (d) dupRoot = (focusedPanel.value === 0 ? panelA : panelB).cwd;
+22:13:43 [vite-plugin-svelte] src/lib/components/ToolsDialog.svelte:65:19 This reference only captures the initial value of `baseDir`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+63:   // ---- Vergleich ----
+64:   let cmpRunning = $state(false);
+65:   let cmpA = $state(baseDir);
+                               ^
+66:   let cmpB = $state(baseDir);
+67:   let cmpDeep = $state(true);
+22:13:43 [vite-plugin-svelte] src/lib/components/ToolsDialog.svelte:66:19 This reference only captures the initial value of `baseDir`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+64:   let cmpRunning = $state(false);
+65:   let cmpA = $state(baseDir);
+66:   let cmpB = $state(baseDir);
+                               ^
+67:   let cmpDeep = $state(true);
+68:   let cmpItems = $state<CompareItem[]>([]);
+✓ 206 modules transformed.
+rendering chunks...
+computing gzip size...
+build/index.html                       0.42 kB │ gzip:  0.29 kB
+build/assets/xterm-B9RQW_iM.css        2.89 kB │ gzip:  0.77 kB
+build/assets/index-CkKQpQ9L.css       11.11 kB │ gzip:  2.90 kB
+build/assets/dist-js-D5fZ5vCJ.js       0.64 kB │ gzip:  0.35 kB
+build/assets/properties-C357ku5U.js    0.66 kB │ gzip:  0.34 kB
+build/assets/cmake-84nbDH0I.js         0.75 kB │ gzip:  0.45 kB
+build/assets/toml-BPTmHmyx.js          1.04 kB │ gzip:  0.53 kB
+build/assets/addon-fit-zFXBjtsU.js     1.48 kB │ gzip:  0.64 kB
+build/assets/yaml-DjjjKWKb.js          1.49 kB │ gzip:  0.71 kB
+build/assets/dist-BEu2_eIe.js          2.06 kB │ gzip:  1.29 kB
+build/assets/shell-DwuoZtxw.js         2.43 kB │ gzip:  1.20 kB
+build/assets/dockerfile-BDePf5PZ.js    4.12 kB │ gzip:  1.64 kB
+build/assets/dist-DXuh5BrL.js          8.51 kB │ gzip:  3.61 kB
+build/assets/dist-Cy8h-fcj.js         15.91 kB │ gzip:  6.98 kB
+build/assets/dist-f1wfoezH.js         20.12 kB │ gzip:  6.78 kB
+build/assets/dist-De-07JVw.js         23.15 kB │ gzip:  7.89 kB
+build/assets/dist-w_BRqnmU.js         26.45 kB │ gzip:  8.68 kB
+build/assets/dist-DHkQJ120.js         26.90 kB │ gzip: 12.74 kB
+build/assets/dist-jCm315uu.js         28.51 kB │ gzip: 11.59 kB
+build/assets/dist-Cfi7kUFS.js         30.82 kB │ gzip: 12.77 kB
+build/assets/dist-DR756aJ1.js         40.32 kB │ gzip: 16.79 kB
+build/assets/dist-3DU9Q4_U.js         44.04 kB │ gzip: 15.19 kB
+build/assets/dist-weMNSQU1.js         44.65 kB │ gzip: 19.36 kB
+build/assets/dist-kq-Cfcbc.js         49.73 kB │ gzip: 16.72 kB
+build/assets/dist-T-0fmNUO.js         68.32 kB │ gzip: 23.22 kB
+build/assets/dist-QOKuZuWu.js         83.75 kB │ gzip: 30.68 kB
+build/assets/dist-CFXJkXD5.js         84.74 kB │ gzip: 33.80 kB
+build/assets/dist-D9zEAiJ3.js         98.22 kB │ gzip: 28.81 kB
+build/assets/dist-D5nmGeW9.js        103.99 kB │ gzip: 34.80 kB
+build/assets/dist-CXc0HXwS.js        178.67 kB │ gzip: 57.96 kB
+build/assets/index-BA0HKY-u.js       194.00 kB │ gzip: 58.31 kB
+build/assets/xterm-DMSWSvK0.js       287.20 kB │ gzip: 67.83 kB
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/lib/stores.svelte.ts is dynamically imported by src/lib/components/SettingsDialog.svelte but also statically imported by src/App.svelte, src/lib/components/ArchiveDialog.svelte, src/lib/components/Breadcrumb.svelte, src/lib/components/ConfirmDialogs.svelte, src/lib/components/ConflictDialog.svelte, ..., dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/lib/api.ts is dynamically imported by src/App.svelte, src/lib/components/SearchDialog.svelte, src/lib/components/Sidebar.svelte but also statically imported by src/App.svelte, src/lib/components/ArchiveDialog.svelte, src/lib/components/Breadcrumb.svelte, src/lib/components/ConfirmDialogs.svelte, src/lib/components/ConflictDialog.svelte, ..., dynamic import will not move module into another chunk.
+
+✓ built in 592ms
+   Compiling compound v1.0.0 (/home/sam/compound/src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 14s
+       Built application at: /home/sam/compound/src-tauri/target/release/compound
+        Info Patching /home/sam/compound/src-tauri/target/release/compound with bundle type information: deb
+    Bundling Compound_1.0.0_amd64.deb (/home/sam/compound/src-tauri/target/release/bundle/deb/Compound_1.0.0_amd64.deb)
+        Info Patching /home/sam/compound/src-tauri/target/release/compound with bundle type information: appimage
+    Bundling Compound_1.0.0_amd64.AppImage (/home/sam/compound/src-tauri/target/release/bundle/appimage/Compound_1.0.0_amd64.AppImage)
+    Finished 2 bundles at:
+        /home/sam/compound/src-tauri/target/release/bundle/deb/Compound_1.0.0_amd64.deb
+        /home/sam/compound/src-tauri/target/release/bundle/appimage/Compound_1.0.0_amd64.AppImage
+

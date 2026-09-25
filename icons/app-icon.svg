@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="panelA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="panelB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="32" y="32" width="960" height="960" rx="200" fill="url(#bg)"/>
+
+  <!-- folder tab -->
+  <path d="M220 340 Q220 300 260 300 L420 300 L470 360 L760 360 Q800 360 800 400 L800 720 Q800 760 760 760 L260 760 Q220 760 220 720 Z" fill="#334155"/>
+
+  <!-- panel A (cyan): left half -->
+  <path d="M260 400 L760 400 L760 720 L260 720 Z" fill="url(#panelA)" opacity="0.92"/>
+  <rect x="292" y="438" width="120" height="18" rx="9" fill="#ffffff" opacity="0.85"/>
+  <rect x="292" y="476" width="200" height="12" rx="6" fill="#ffffff" opacity="0.55"/>
+  <rect x="292" y="502" width="176" height="12" rx="6" fill="#ffffff" opacity="0.45"/>
+  <rect x="292" y="528" width="190" height="12" rx="6" fill="#ffffff" opacity="0.45"/>
+  <rect x="292" y="554" width="140" height="12" rx="6" fill="#ffffff" opacity="0.45"/>
+  <circle cx="276" cy="470" r="8" fill="#ffffff" opacity="0.9"/>
+
+  <!-- panel B (violet): right half -->
+  <path d="M464 400 L800 400 L800 720 L464 720 Z" fill="url(#panelB)" opacity="0.92"/>
+  <circle cx="498" cy="470" r="8" fill="#ffffff" opacity="0.9"/>
+  <rect x="520" y="464" width="120" height="12" rx="6" fill="#ffffff" opacity="0.6"/>
+  <rect x="498" y="500" width="200" height="12" rx="6" fill="#ffffff" opacity="0.45"/>
+  <rect x="498" y="526" width="176" height="12" rx="6" fill="#ffffff" opacity="0.45"/>
+  <rect x="498" y="552" width="190" height="12" rx="6" fill="#ffffff" opacity="0.45"/>
+
+  <!-- divider -->
+  <rect x="432" y="392" width="32" height="336" rx="12" fill="#0f172a"/>
+  <circle cx="448" cy="440" r="6" fill="#64748b"/>
+  <circle cx="448" cy="560" r="6" fill="#64748b"/>
+  <circle cx="448" cy="680" r="6" fill="#64748b"/>
+</svg>
