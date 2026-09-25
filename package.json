@@ -1,0 +1,49 @@
+{
+  "name": "compound",
+  "version": "1.0.0",
+  "description": "Compound – ein eigener, flotter Dateimanager (Tauri, Linux zuerst, dann Windows)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "tauri": "tauri"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@codemirror/commands": "^6",
+    "@codemirror/lang-cpp": "^6.0.3",
+    "@codemirror/lang-css": "^6",
+    "@codemirror/lang-go": "^6.0.1",
+    "@codemirror/lang-html": "^6",
+    "@codemirror/lang-java": "^6.0.2",
+    "@codemirror/lang-javascript": "^6",
+    "@codemirror/lang-json": "^6",
+    "@codemirror/lang-markdown": "^6",
+    "@codemirror/lang-php": "^6.0.2",
+    "@codemirror/lang-python": "^6",
+    "@codemirror/lang-rust": "^6",
+    "@codemirror/lang-sql": "^6",
+    "@codemirror/lang-xml": "^6",
+    "@codemirror/language": "^6",
+    "@codemirror/legacy-modes": "^6.5.4",
+    "@codemirror/search": "^6",
+    "@codemirror/state": "^6",
+    "@codemirror/view": "^6",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-store": "^2",
+    "@xterm/addon-fit": "^0.10",
+    "@xterm/xterm": "^5.5"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@tauri-apps/cli": "^2",
+    "svelte": "^5.56.3",
+    "svelte-check": "^4.6.0",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16"
+  }
+}
