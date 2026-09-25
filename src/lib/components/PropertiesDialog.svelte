@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Свойства файла: размер, даты, права, тип. Только чтение.
+	// File properties: size, dates, permissions, type. Read-only.
 	import Icon from './Icon.svelte';
 	import { uiDialog, closeDialog, settings, lang } from '../stores.svelte';
 	import { t } from '../i18n';

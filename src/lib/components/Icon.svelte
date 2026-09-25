@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Иконка по имени из icons.ts (lucide 24x24, stroke). Тонкая обёртка.
+	// Single icon by name from icons.ts (lucide 24x24, stroke). Thin wrapper.
 	import { iconPath } from '../icons';
 
 	let { name = 'file', size = 16, color, strokeWidth = 1.7 }: {

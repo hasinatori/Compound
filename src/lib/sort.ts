@@ -1,7 +1,8 @@
 import type { FileEntry, SortKey } from './types';
 import { compareNat } from './format';
 
-/** Gemeinsame Sortierung für Panel-Liste und Tastatur-Navigation. */
+// Общая сортировка для списка панели и для навигации стрелками.
+// Shared sort for the panel list and keyboard navigation.
 export function sortEntries(entries: FileEntry[], key: SortKey, desc: boolean): FileEntry[] {
 	const arr = [...entries];
 	const dirsFirst = (a: FileEntry, b: FileEntry) => (a.isDir === b.isDir ? 0 : a.isDir ? -1 : 1);

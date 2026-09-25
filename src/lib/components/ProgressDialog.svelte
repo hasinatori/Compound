@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Диалог прогресса долгих операций + кнопка отмены (cancel_op).
+	// Progress dialog for long ops + a cancel button (cancel_op).
 	import Icon from './Icon.svelte';
 	import { ops, runCancelOp, lang } from '../stores.svelte';
 	import { t } from '../i18n';

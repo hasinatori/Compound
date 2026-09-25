@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Просмотр/правка текста (CodeMirror 6) с подсветкой и защитой от гонок.
+	// Text view/edit (CodeMirror 6) with highlighting and race protection.
+	// save_text отдаёт expected_mtime — если файл меняли, получаем ошибку.
+	// save_text takes expected_mtime — external edits make the save fail.
 	import Icon from './Icon.svelte';
 	import {
 		editorPath,
@@ -36,7 +40,8 @@
 	}
 
 	async function langFor(path: string, firstLine: string): Promise<Extension[]> {
-		// Legacy-Modes (StreamLanguage) für Sprachen ohne offizielles CM6-Paket.
+		// Legacy-режимы (StreamLanguage) для языков без официального пакета CM6.
+		// Legacy modes (StreamLanguage) for languages without an official CM6 package
 		const shellLang = async (): Promise<Extension> => {
 			const { StreamLanguage } = await import('@codemirror/language');
 			const { shell } = await import('@codemirror/legacy-modes/mode/shell');
@@ -99,7 +104,8 @@
 				}
 			}
 		}
-		// Shebang-Erkennung für Skripte ohne passende Endung.
+		// Определяем shebang у скриптов без подходящего расширения.
+		// Shebang detection for scripts without a matching extension
 		try {
 			if (/^#!.*\b(bash|zsh|ksh|sh)\b/.test(firstLine)) return [await shellLang()];
 			if (/^#!.*python/.test(firstLine)) return [(await import('@codemirror/lang-python')).python()];
@@ -239,7 +245,8 @@
 		view = null;
 	}
 
-	// Weg: aktive Auswahl im fokussierten Panel (oder ein einzelner Pfad)
+	// Путь: активная выборка в панели в фокусе (или один путь).
+	// Path: the active selection in the focused panel (or a single path)
 	function pickFromPanel() {
 		const p = focusedPanel.value === 0 ? panelA : panelB;
 		const sel = p.selected.filter((s) => !p.entries.find((e) => e.path === s)?.isDir);
@@ -251,10 +258,12 @@
 		}
 	}
 
-	// Beim Öffnen: aktuelle Auswahl verwenden
+	// При открытии берём текущую выборку.
+	// On open: use the current selection
 	if (!editorPath.value) pickFromPanel();
 
-	// Editor mounten, sobald der Host-DOM steht (kann später als load() passieren)
+	// Монтируем редактор, когда появится host-DOM (может быть позже load()).
+	// Mount the editor once the host DOM exists (may happen after load())
 	$effect(() => {
 		if (host && editorPath.value && !view && !binary && status) {
 			void mountEditor(text, editorPath.value);

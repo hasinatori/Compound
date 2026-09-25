@@ -1,0 +1,29 @@
+# Зависимости и кэш сборки Rust — 10 ГБ, никогда не в репозиторий.
+# Dependencies and the Rust build cache — 10 GB, never into the repo.
+node_modules/
+src-tauri/target/
+
+# Служебные файлы ОС и редактора.
+# OS and editor scratch files.
+.DS_Store
+.directory
+Thumbs.db
+.vscode/*.log
+
+# Промежуточные артефакты vite.
+# Vite temp artifacts.
+/.svelte-kit
+/package
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Секреты — никогда не коммитим.
+# Secrets — never commit.
+.env
+.env.*
+!.env.example
+
+# build/ НЕ игнорируется намеренно: он уже отслеживается в репозитории
+# и нужен для 1:1-синхронизации собранного приложения.
+# build/ is intentionally NOT ignored: it is already tracked upstream and
+# the built app is synced 1:1.

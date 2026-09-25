@@ -1,3 +1,8 @@
+// Встроенный терминал: pty-сессии, ввод, ресайз, закрытие.
+// Built-in terminal: pty sessions, input, resize, close.
+// Сессии живут в AppState до явного terminal_close.
+// Sessions stay in AppState until terminal_close.
+
 use crate::state::{AppState, TerminalSession};
 use crate::types::*;
 use crate::ui_error::{self, Error};
@@ -20,7 +25,8 @@ fn kill_all(state: &State<'_, AppState>) {
     terms.clear();
 }
 
-/// Startet eine eingebettete Terminal-Sitzung (portable-pty) im gewünschten Ordner.
+/// Стартует встроенную pty-сессию в нужном каталоге.
+/// Starts an embedded pty session in the given folder.
 #[tauri::command]
 pub fn terminal_open(
     state: State<'_, AppState>,
@@ -109,7 +115,8 @@ pub fn terminal_open(
     Ok(TerminalInfo { id, cwd })
 }
 
-/// Schickt Eingaben an die Terminal-Sitzung.
+/// Отправляет ввод в pty-сессию.
+/// Sends input to the pty session.
 #[tauri::command]
 pub fn terminal_write(state: State<'_, AppState>, id: String, data: String) -> Result<(), Error> {
     let terms = state

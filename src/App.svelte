@@ -1,4 +1,10 @@
 <script lang="ts">
+	// Оболочка приложения: layout, глобальные хоткеи, переключение вида.
+	// App shell: layout, global hotkeys, view switching.
+	// Хоткеи в onKey — единственное место для клавиатуры, диалоги — через uiDialog.
+	// onKey is the single keyboard entry point; dialogs go through uiDialog.
+	// Стой тут, если меняешь сочетания: ShortcutsDialog читает те же строки.
+	// Touch this file when changing key combos: ShortcutsDialog mirrors them.
 	import Toolbar from './lib/components/Toolbar.svelte';
 	import Sidebar from './lib/components/Sidebar.svelte';
 	import Panel from './lib/components/Panel.svelte';
@@ -54,7 +60,8 @@
 			setPending(req);
 		});
 
-		// Handler: Fortschritt an Store (lokalisierte Labels aus Kinds+Params)
+		// Прогресс в стор: подписи локализованы из kind+params.
+		// Progress into the store; labels come from kind+params (i18n).
 		setProgressHandler((opId, started, events) => {
 			if (!ops[opId]) opNew(opId, renderOpLabel(started.kind), started.total);
 			const last = events[events.length - 1];
@@ -91,8 +98,11 @@
 		return e ? [e.path] : p.selected;
 	}
 
+	// Единая точка входа клавиатуры. Панель сначала ест событие, потом App.
+	// Single keyboard entry. The panel consumes first, App handles the rest.
 	function onKey(e: KeyboardEvent) {
-		// Escape schließt immer das oberste Popup:
+		// Escape всегда закрывает верхний попап.
+		// Escape always closes the topmost popup:
 		// 1. laufender Konflikt -> Operation abbrechen (liest Antwort vom Backend ab)
 		// 2. offener Dialog -> schließen
 		// 3. sonst Toasts/Notices ausblenden (bewusst AUCH bei Fokus in Eingabefeldern,
@@ -168,7 +178,8 @@
 		}
 		if (k === 'backspace') {
 			// Backspace = zurück zum übergeordneten Verzeichnis (Dateimanager-Standard).
-			// Der Papierkorb läuft jetzt nur noch über Entf/Delete bzw. Strg+D.
+			// Корзина теперь только через Entf/Delete или Strg+D.
+		// Trash is now Entf/Delete or Strg+D only.
 			e.preventDefault();
 			navDir('up');
 			return;
@@ -179,9 +190,11 @@
 			openDialog({ kind: 'confirmTrash', payload: { paths: [...p.selected] } });
 			return;
 		}
-		// Alt+Strg+Pfeil: Auswahl im Doppelpanel in das angrenzende Panel verschieben.
+		// Alt+Strg+стрелка: перенос выделения в соседнюю панель.
+		// Alt+Ctrl+Arrow: move the selection to the adjacent panel.
 		// Pfeil rechts → rechtes Panel (B), Pfeil links → linkes Panel (A).
-		// Muss VOR dem reinen Alt-Pfeil-Navigationsblock stehen (der fängt pfeiltasten sonst ab).
+		// Обязательно ДО блока навигации Alt+стрелка, иначе он перехватит.
+		// Must stay BEFORE the plain Alt+Arrow nav block, which would eat it.
 		if (e.altKey && e.ctrlKey && (k === 'arrowleft' || k === 'arrowright')) {
 			e.preventDefault();
 			if (settings.singlePanel) {
@@ -199,7 +212,8 @@
 				return;
 			}
 			// Nach dem Verschieben beide Panels neu laden: Quelle (Selektion weg)
-			// und Ziel (neu angekommene Dateien), damit kein Panel veraltet bleibt.
+			// и цель (новые файлы), чтобы панель не устарела.
+			// and the target (freshly arrived files) so no panel goes stale.
 			void copyOrMove('move', [...p.selected], dest.cwd).then(() => {
 				refreshPanel(panelA);
 				refreshPanel(panelB);
@@ -215,9 +229,12 @@
 		if (k === 'enter') {
 			e.preventDefault();
 			const sel = [...selSorted()];
-			// Muster B (Dual-Panel): eigene Auswahl leer, aber das ANDERE Panel
-			// hat eine Markierung → Enter = „diese Markierung ins aktive
-			// Verzeichnis HIER verschieben" (rechts markieren → links Enter).
+			// Muster B (две панели): своя выборка пуста, но в ДРУГОЙ панели
+			// есть метки -> Enter = перенести их в каталог ТЕКУЩЕЙ панели
+			// (справа отметил -> слева Enter).
+			// Pattern B (dual panel): own selection empty but the OTHER panel
+			// has marks -> Enter moves them into the focused panel's dir
+			// (mark right -> Enter left).
 			if (sel.length === 0) {
 				const otherP = focusedPanel.value === 0 ? panelB : panelA;
 				if (otherP.selected.length > 0) {
@@ -301,10 +318,14 @@
 		}
 	}
 
+	// Блокирует только реальный No-Op: файлы лежат ПРЯМО в цели.
+	// Blocks a real no-op only: files sit directly in the target.
 	function sameDir(paths: string[], dir: string): boolean {
-		// Nur blockieren, wenn die Dateien DIREKT im Zielverzeichnis liegen
-		// (dann wäre es ein No-Op). Dateien in einem UNTERordner des Ziels
-		// sind z.B. ein legitimes "eine Ebene hoch": /a/b/f.txt nach /a.
+		// Блокируем только настоящий No-Op: файлы лежат ПРЯМО в цели.
+		// Файл во ПОДПАПКЕ цели — это законный подъём на уровень выше.
+		// Block only a real no-op: files sit directly in the target.
+		// A file in a SUBDIR of the target is a legit one-level-up move:
+		// /a/b/f.txt -> /a.
 		const norm = dir.replace(/\/+$/, '') || '/';
 		return paths.every((x) => {
 			const xp = x.replace(/\/+$/, '');
@@ -314,6 +335,8 @@
 		});
 	}
 
+	// Общая точка копирования/перемещения. sameDir отсекает No-Op.
+	// Shared copy/move entry. sameDir rejects no-ops.
 	async function copyOrMove(kind: 'copy' | 'move', srcs: string[], dest: string) {
 		const clean = dest.replace(/\/+$/, '');
 		if (sameDir(srcs, clean)) {
@@ -328,7 +351,8 @@
 		}
 	}
 
-	// Fokus: Klick auf Panel setzt Fokus
+	// Фокус: клик по панели переводит фокус.
+	// Focus: clicking a panel focuses it.
 	function focusA() {
 		setFocusedPanel(0);
 	}

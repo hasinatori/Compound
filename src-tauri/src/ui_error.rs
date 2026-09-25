@@ -1,9 +1,8 @@
-//! Lokalisierbare Fehler für alle Command-Grenzen.
-//!
-//! An die UI geht ausschließlich `{ code, params }`:
-//!   - `code`   -> i18n-Key `errors.<code>` im Frontend
-//!   - `params` -> Platzhalter für den Key
-//! `Display` liefert den deutschen Log-/Fallback-Text (Backend-Logs, Tests).
+// Локализованные ошибки: наружу только {code, params}, текст — во фронте.
+// Localized errors: only {code, params} crosses the wire, text lives in the UI.
+// Код -> ключ i18n errors.<code>. Немецкий текст только для лога.
+// code -> i18n key errors.<code>. German text is log-only.
+
 use serde::ser::{Serialize, SerializeMap, Serializer};
 use std::collections::BTreeMap;
 use std::fmt;
@@ -29,7 +28,8 @@ impl Error {
         self
     }
 
-    /// Nur von Tests/Frontend-Helfern genutzt; Serialisierung läuft über `Serialize`.
+    /// Только тесты/хелперы фронта; сериализация через `Serialize`.
+    /// Used by tests/frontend helpers only; serialization goes via `Serialize`.
     #[allow(dead_code)]
     pub fn code(&self) -> &'static str {
         self.code
@@ -41,7 +41,8 @@ impl Error {
     }
 }
 
-/// I/O-Fehler mit Pfad- und OS-Fehler-Informationen.
+/// I/O-ошибка с путём и текстом ОС.
+/// I/O error carrying the path and the OS message.
 pub fn io(path: impl fmt::Display, err: impl fmt::Display) -> Error {
     Error::new("io", format!("I/O-Fehler: {path}: {err}"))
         .with("path", path.to_string())
@@ -58,12 +59,14 @@ pub fn lock() -> Error {
     Error::new("stateLock", "Interner Zustand blockiert")
 }
 
-/// Param-Helfer für Fortschritts-Events (`{name: value}`).
+/// Хелпер параметров для событий прогресса (`{name: value}`).
+/// Param helper for progress events (`{name: value}`).
 pub fn par(name: impl fmt::Display, val: impl fmt::Display) -> BTreeMap<String, String> {
     BTreeMap::from([(name.to_string(), val.to_string())])
 }
 
-/// Erweitert eine Parameter-Map um einen weiteren Eintrag.
+/// Добавляет ещё одну пару в карту параметров.
+/// Adds one more entry to a param map.
 pub fn param(
     mut map: BTreeMap<String, String>,
     name: impl fmt::Display,

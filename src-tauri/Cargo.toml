@@ -1,8 +1,13 @@
+# Rust-часть Compound: Tauri 2, команды ФС, архивы, поиск, терминал.
+# Rust side of Compound: Tauri 2, FS commands, archives, search, terminal.
+# Правь версию здесь И в tauri.conf.json — они должны совпадать.
+# Bump the version here AND in tauri.conf.json — they must match.
+
 [package]
 name = "compound"
 version = "1.0.0"
-description = "Compound – flotter Dateimanager (Tauri)"
-authors = ["sam"]
+description = "Compound – a fast, self-built file manager (Tauri)"
+authors = ["Sam <S4m>", "Димитрий <дима>", "Наталья <натя>", "Jake <JK>"]
 edition = "2021"
 
 [lib]

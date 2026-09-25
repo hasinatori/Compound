@@ -1,3 +1,11 @@
+/* Тёмная тема + общий layout. Все цвета через CSS-переменные в :root.
+   Dark theme + global layout. All colors come from the :root variables.
+   Меняешь тему -> правь только :root, остальное наследует.
+   Changing the theme -> touch only :root, everything else inherits.
+   Порядок секций ниже = порядок в DOM, держим.
+   Section order below mirrors the DOM order, keep it that way. */
+
+
 :root {
 	--bg: #16181d;
 	--bg-elev: #1c1f26;
@@ -96,7 +104,7 @@ textarea:focus {
 	background: transparent;
 }
 
-/* ---- Utility-Klassen ---- */
+/* ---- Утилиты / utilities ---- */
 .toolbar-btn {
 	display: inline-flex;
 	align-items: center;
@@ -168,7 +176,7 @@ textarea:focus {
 	filter: none;
 }
 
-/* ---- Dialoge ---- */
+/* ---- Диалоги / dialogs ---- */
 .overlay {
 	position: fixed;
 	inset: 0;
@@ -236,7 +244,7 @@ textarea:focus {
 	color: var(--text-faint);
 }
 
-/* ---- Panels ---- */
+/* ---- Панели / panels ---- */
 .panel {
 	display: flex;
 	flex-direction: column;
@@ -355,7 +363,7 @@ textarea:focus {
 	z-index: 5;
 }
 
-/* Contextmenu */
+/* Контекстное меню / context menu */
 .ctx-menu {
 	position: fixed;
 	z-index: 200;
@@ -388,7 +396,7 @@ textarea:focus {
 	color: var(--err);
 }
 
-/* Statusbar */
+/* Статусбар / status bar */
 .statusbar {
 	height: var(--status-h);
 	display: flex;
@@ -408,7 +416,7 @@ textarea:focus {
 	gap: 14px;
 }
 
-/* Sidebar */
+/* Сайдбар / sidebar ---- */
 .sidebar {
 	width: 190px;
 	flex: none;
@@ -469,7 +477,7 @@ textarea:focus {
 	line-height: 1.2;
 }
 
-/* Breadcrumb */
+/* Хлебные крошки / breadcrumb ---- */
 .breadcrumb {
 	display: flex;
 	align-items: center;
@@ -495,7 +503,7 @@ textarea:focus {
 	color: var(--accent);
 }
 
-/* Notices */
+/* Тосты уведомлений / notice toasts ---- */
 .notices {
 	position: fixed;
 	top: 56px;
@@ -546,7 +554,7 @@ textarea:focus {
 	}
 }
 
-/* Tabs (Tools/Search-Einstellungen) */
+/* Табы (настройки Tools/Search) / tabs ---- */
 .tabs {
 	display: flex;
 	gap: 2px;
@@ -569,7 +577,7 @@ textarea:focus {
 	border-bottom-color: var(--accent);
 }
 
-/* Progress */
+/* Прогресс операций / op progress ---- */
 .progress-track {
 	height: 6px;
 	background: var(--bg-active);
@@ -583,7 +591,7 @@ textarea:focus {
 	transition: width 0.15s linear;
 }
 
-/* Tables */
+/* Таблицы (свойства, архив, поиск) / tables ---- */
 .tbl {
 	width: 100%;
 	border-collapse: collapse;
@@ -608,7 +616,7 @@ textarea:focus {
 	background: var(--bg-hover);
 }
 
-/* Editor */
+/* Редактор (CodeMirror) / editor ---- */
 .editor-host {
 	flex: 1;
 	display: flex;
@@ -616,7 +624,7 @@ textarea:focus {
 	min-height: 0;
 }
 
-/* Terminal */
+/* Терминал (xterm.js) / terminal ---- */
 .term-host {
 	flex: 1;
 	min-height: 0;
@@ -626,7 +634,7 @@ textarea:focus {
 	padding: 8px;
 }
 
-/* Grid-Ansicht */
+/* Вид плиткой / grid view ---- */
 .grid-view {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
@@ -662,14 +670,15 @@ textarea:focus {
 	line-height: 1.3;
 }
 
-/* Pane-Aufteilung */
+/* Разделение панелей / pane split ---- */
 .panes {
 	flex: 1;
 	display: flex;
 	min-height: 0;
 }
 
-/* Sichtbare Mittentrennung zwischen den Panels (nur Doppelpanel-Modus).
+/* Видимый разделитель между панелями (только режим двух панелей).
+   Visible divider between the panels (dual-panel mode only).
    pointer-events:none, damit der Trenner weder Klicks noch Fokus blockiert. */
 .pane-split {
 	flex: none;
@@ -689,7 +698,7 @@ kbd {
 	font-family: inherit;
 }
 
-/* Shortcuts-Übersicht */
+/* Таблица хоткеев / shortcuts sheet ---- */
 .sc-head {
 	font-size: 11px;
 	text-transform: uppercase;
@@ -720,7 +729,8 @@ kbd {
 	color: var(--text);
 }
 
-/* Fokus-Ring für aktives Panel */
+/* Кольцо фокуса у активной панели.
+/* Focus ring for the active panel */
 .panes .panel.active-panel {
 	box-shadow: inset 0 2px 0 var(--accent);
 }

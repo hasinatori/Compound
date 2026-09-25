@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Таблица хоткеев — просто чтение списка из i18n.
+	// Shortcut cheat sheet — reads the list from i18n only.
 	import Icon from './Icon.svelte';
 	import { uiDialog, closeDialog, settings, lang } from '../stores.svelte';
 	import { t } from '../i18n';
@@ -6,8 +8,10 @@
 	const d = $derived(uiDialog.d?.kind === 'shortcuts' ? true : false);
 	const L = () => settings.language;
 
-	// Beschreibungen werden aus dem i18n-Wörterbuch geladen,
-	// damit der Dialog mit der gewählten Sprache wechselt.
+	// Описания берём из i18n-словаря,
+	// Descriptions come from the i18n dictionary,
+	// поэтому диалог следует за языком настроек.
+	// so the dialog follows the chosen language.
 	const sections = $derived([
 		{
 			title: t('shortcuts.browser', L()),

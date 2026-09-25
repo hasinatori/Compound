@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Хлебные крошки текущей панели: клик = перейти в этот каталог.
+	// Breadcrumbs for the current panel: click jumps to that directory.
 	import Icon from './Icon.svelte';
 	import { t } from '../i18n';
 	import type { PanelState } from '../types';

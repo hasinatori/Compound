@@ -1,3 +1,8 @@
+// Хелперы ФС: расширение, тип, права, скрытость, валидные имена, бинарники.
+// FS helpers: ext, kind, perms, hidden, valid names, binary sniff.
+// Чистые функции без стора — можно звать отовсюду.
+// Pure functions, no state — safe to call from anywhere.
+
 use crate::types::FileEntry;
 use crate::ui_error::{self, Error};
 use std::fs;
@@ -94,7 +99,8 @@ pub fn read_dir_entries(path: &Path) -> Result<Vec<FileEntry>, Error> {
             Err(_) => continue,
         };
         let is_symlink = ft.is_symlink();
-        // Entry::metadata() folgt Symlinks – genau das wollen wir hier.
+        // Entry::metadata() идёт по симлинкам — нам это и надо.
+        // Entry::metadata() follows symlinks, which is what we want here.
         let meta = match entry.metadata() {
             Ok(m) => m,
             Err(_) => continue, // defekter Symlink / verlorener Eintrag -> überspringen
@@ -176,7 +182,8 @@ pub fn norm_path(p: &str) -> String {
     }
 }
 
-/// Sicherer Umgang mit Dateinamen-Validierung.
+/// Безопасная валидация имён файлов.
+/// Safe file-name validation.
 pub fn valid_name(name: &str) -> Result<(), Error> {
     if name.is_empty() {
         return Err(Error::new("nameEmpty", "Name darf nicht leer sein"));
@@ -196,7 +203,8 @@ pub fn valid_name(name: &str) -> Result<(), Error> {
     Ok(())
 }
 
-/// Prozent-Decodierung (für .trashinfo-Pfade).
+/// Процент-декодирование (для путей .trashinfo).
+/// Percent-decoding (for .trashinfo paths).
 pub fn percent_decode(s: &str) -> String {
     let bytes = s.as_bytes();
     let mut out: Vec<u8> = Vec::with_capacity(bytes.len());

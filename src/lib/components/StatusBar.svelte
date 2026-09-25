@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Статусбар внизу: выбор, размер, свободно на диске. Только чтение стора.
+	// Bottom status bar: selection, size, free space. Read-only from the store.
 	import Icon from './Icon.svelte';
 	import { t } from '../i18n';
 	import { settings, panelA, panelB, focusedPanel, ops } from '../stores.svelte';

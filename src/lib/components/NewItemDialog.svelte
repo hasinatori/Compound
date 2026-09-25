@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Диалог создания файла/папки. destDir приходит из панели.
+	// New file/folder dialog. destDir comes from the panel.
 	import Icon from './Icon.svelte';
 	import { uiDialog, closeDialog, notify, lang, errMsg } from '../stores.svelte';
 	import { t } from '../i18n';

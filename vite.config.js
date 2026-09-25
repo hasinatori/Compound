@@ -1,3 +1,5 @@
+// Конфиг Vite: алиасы, порт дев-сервера, обход Tauri в деве.
+// Vite config: aliases, dev-server port, Tauri bypass in dev.
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 // @ts-expect-error type error without @types/node package

@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Подтверждения: удалить навсегда, очистить корзину.
+	// Confirmations: permanent delete, empty trash.
 	import Icon from './Icon.svelte';
 	import {
 		uiDialog,

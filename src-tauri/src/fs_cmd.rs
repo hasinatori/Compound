@@ -1,3 +1,8 @@
+// Команды чтения ФС: листинг, места, путь, размер диска, превью, открыть.
+// FS read commands: listing, places, path parts, disk usage, thumb, open.
+// Только чтение — мутации живут в ops_cmd.rs.
+// Read-only here; mutations live in ops_cmd.rs.
+
 use crate::fsutil;
 use crate::state::AppState;
 use crate::types::*;
@@ -260,8 +265,10 @@ fn fit_dim(w: u32, h: u32, max: u32) -> (u32, u32) {
     )
 }
 
-/// Erzeugt (und cached) ein Thumbnail; gibt den Cache-Dateipfad zurück.
-/// Die UI lädt ihn über das Asset-Protokoll (convertFileSrc).
+/// Делает (и кэширует) превью, отдаёт путь в кэше.
+/// Creates and caches a thumbnail, returns the cache file path.
+/// UI грузит его через asset-протокол (convertFileSrc).
+/// The UI loads it through the asset protocol (convertFileSrc).
 #[tauri::command]
 pub fn thumb(state: State<'_, AppState>, path: String) -> Result<String, Error> {
     let p = Path::new(&path);
@@ -290,7 +297,8 @@ pub fn thumb(state: State<'_, AppState>, path: String) -> Result<String, Error> 
     Ok(thumb_file.display().to_string())
 }
 
-/// Öffnet eine Datei/Ordner mit dem Standardprogramm.
+/// Открывает файл/папку программой по умолчанию.
+/// Opens a file/folder with the default application.
 #[tauri::command]
 pub fn open_default(app: tauri::AppHandle, path: String) -> Result<(), Error> {
     use tauri_plugin_opener::OpenerExt;

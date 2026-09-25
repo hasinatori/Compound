@@ -1,3 +1,8 @@
+// Serde-типы на границе frontend/backend. Контракт — не меняем без надобности.
+// Serde types on the frontend/backend boundary. Contract — change with care.
+// TS-зеркало: src/lib/types.ts, держим синхронно по полям.
+// TS mirror: src/lib/types.ts, keep field-by-field in sync.
+
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -18,7 +23,8 @@ pub struct FileEntry {
     pub link_target: Option<String>,
 }
 
-/// Ort in der Seitenleiste (Home, Ordner, Laufwerke, Papierkorb, Root).
+/// Пункт сайдбара (дом, папки, диски, корзина, корень).
+/// Sidebar place (home, folders, drives, trash, root).
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Place {
@@ -27,7 +33,8 @@ pub struct Place {
     pub kind: String,
 }
 
-/// Ein Pfadsegment für die Breadcrumb-Leiste.
+/// Сегмент пути для хлебных крошек.
+/// One path segment for the breadcrumb bar.
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PathPart {
@@ -42,9 +49,12 @@ pub struct DiskUsage {
     pub free: u64,
 }
 
-/// Fortschritts-Ereignis für laufende Operationen (Channel).
-/// `kind` ist ein Maschinen-Token (path/target/skip/skipMissing/copying/done/groups/pct),
-/// `params` trägt die Platzhalter; die UI übersetzt über `op.<kind>` (i18n).
+/// Событие прогресса для долгих операций (Channel).
+/// Progress event for running operations (channel).
+/// `kind` — машинный токен (path/target/skip/skipMissing/copying/done/groups/pct),
+/// `kind` is a machine token (path/target/skip/skipMissing/copying/done/groups/pct),
+/// `params` несёт плейсхолдеры, UI переводит по `op.<kind>`.
+/// `params` carries placeholders; the UI maps them via `op.<kind>`.
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ProgressEvent {
@@ -76,8 +86,10 @@ impl ProgressEvent {
     }
 }
 
-/// Rückgabe einer Operation an den Aufrufer (op wird asynchron ausgeführt).
-/// `kind` ist ein Maschinen-Token (`op.copy` usw.), das die UI übersetzt.
+/// Ответ на запуск операции (сама операция идёт асинхронно).
+/// Return value of an op start (the op itself runs async).
+/// `kind` — машинный токен (`op.copy` и т.п.), UI его переводит.
+/// `kind` is a machine token (`op.copy` etc.) that the UI translates.
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OpStarted {
@@ -94,7 +106,8 @@ pub struct OpFinished {
     pub error: Option<crate::ui_error::Error>,
 }
 
-/// Anfrage an die UI bei Namens- oder Überschreibkonflikt.
+/// Запрос в UI при конфликте имени или перезаписи.
+/// Request to the UI on a name or overwrite conflict.
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ConflictRequest {
@@ -107,7 +120,8 @@ pub struct ConflictRequest {
     pub total: u64,
 }
 
-/// Antwort der UI auf einen Konflikt.
+/// Ответ UI на конфликт.
+/// UI answer to a conflict.
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ConflictChoice {
@@ -215,10 +229,12 @@ pub struct RenameRule {
     /// upper | lower | title
     #[serde(default)]
     pub case_mode: Option<String>,
-    /// Nur für "ext": neue Endung ohne Punkt
+    /// Только для "ext": новое расширение без точки
+    /// "ext" only: the new extension without the dot
     #[serde(default)]
     pub new_ext: Option<String>,
-    /// Für numbering: Vorlage mit Platzhaltern {n}, {name}, {ext}
+    /// Для numbering: шаблон с плейсхолдерами {n}, {name}, {ext}
+    /// For numbering: template with {n}, {name}, {ext} placeholders
     #[serde(default)]
     pub template: Option<String>,
     #[serde(default)]

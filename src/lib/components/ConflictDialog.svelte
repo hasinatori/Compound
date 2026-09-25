@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Диалог конфликта при копировании: перезаписать / пропустить / оба оставить.
+	// Copy conflict dialog: overwrite / skip / keep both.
 	import Icon from './Icon.svelte';
 	import { resolveConflict } from '../api';
 	import { t } from '../i18n';
@@ -22,7 +24,8 @@
 		try {
 			await resolveConflict(r.opId, r.key, { action, applyToAll });
 		} catch {
-			// Backend-Antwort kann fehlschlagen, wenn die Op schon vorbei ist
+			// Ответ backend может упасть, если операция уже завершилась.
+			// The backend reply can fail if the op is already done
 		}
 		applyToAll = false;
 		onDone();

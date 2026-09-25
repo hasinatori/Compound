@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Верхняя панель: кнопки действий + переключатель вида. Только UI, логика в App.
+	// Top toolbar: action buttons + view switcher. UI only, logic lives in App.
 	import Icon from './Icon.svelte';
 import {
 	view,

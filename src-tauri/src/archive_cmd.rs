@@ -1,3 +1,8 @@
+// Архивы: zip, tar, gzip, bzip2, xz + 7z через системный бинарь.
+// Archives: zip, tar, gzip, bzip2, xz + 7z through the system binary.
+// Распаковка идёт в op-сторе, чтобы можно было отменить.
+// Extraction runs as a tracked op so it can be cancelled.
+
 use crate::fsutil;
 use crate::state::{register_op, unregister_op, AppState, CancelToken};
 use crate::types::*;
@@ -70,7 +75,8 @@ fn arch_ext(archive: &Path) -> String {
     fsutil::file_ext(&name)
 }
 
-/// Liste der Archiveinträge (für Vorschau).
+/// Список записей архива (для превью).
+/// List of archive entries (for the preview).
 #[tauri::command]
 pub fn archive_list(archive: String) -> Result<Vec<ArchiveEntry>, Error> {
     let p = Path::new(&archive);
@@ -268,7 +274,8 @@ fn collect_files(srcs: &[String], base: &Path) -> Result<Vec<(PathBuf, String, b
         let rel = p.strip_prefix(base).unwrap_or(p);
         let mut rel_s = rel.to_string_lossy().into_owned();
         if rel_s.is_empty() {
-            // Quelle ist selbst die Basis: Ordnernamen als Wurzeleintrag nehmen.
+            // Источник сам и есть база: имя папки идёт корнем записи.
+            // A folder source is its own base: keep the folder name as root entry.
             rel_s = p
                 .file_name()
                 .map(|n| n.to_string_lossy().into_owned())
@@ -295,9 +302,11 @@ fn collect_files(srcs: &[String], base: &Path) -> Result<Vec<(PathBuf, String, b
     Ok(out)
 }
 
-/// Basis für Archivpfade: bei einer einzelnen Ordner-Quelle auf das
-/// Elternverzeichnis anheben, damit der Ordnername im Archiv erhalten bleibt
-/// und keine leeren Wurzelpfade entstehen (tar-Fehler „at least one component“).
+/// База для путей в архиве: если источник один каталог, поднимаемся на
+/// уровень выше, чтобы имя каталога сохранилось и не было пустых корней
+/// (иначе tar ругается «at least one component»).
+/// Base for archive paths: a single folder source is lifted one level up so
+/// the folder name survives and we emit no empty roots (tar would fail).
 fn archive_base(srcs: &[String]) -> PathBuf {
     let base = common_base(srcs);
     if srcs.len() == 1 {
@@ -319,7 +328,8 @@ fn run_create(
     cancel: &CancelToken,
 ) -> Result<ArchiveSummary, Error> {
     let dest_p = Path::new(dest);
-    // Basis = gemeinsames übergeordnetes Verzeichnis der Quellen.
+    // База = общий родитель всех источников.
+    // Base = common parent dir of the sources.
     let base = archive_base(srcs);
     let ext = arch_ext(dest_p);
     let bytes_done = AtomicU64::new(0);

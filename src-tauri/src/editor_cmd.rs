@@ -1,3 +1,8 @@
+// Чтение/запись текста для редактора с защитой от гонки по mtime.
+// Read/write text for the editor with an mtime race guard.
+// expected_mTIME не совпал -> ошибка, значит файл меняли извне.
+// expected_mtime mismatch -> error, the file changed externally.
+
 use crate::fsutil;
 use crate::types::*;
 use crate::ui_error::{self, Error};
@@ -7,7 +12,8 @@ use std::path::Path;
 const DEFAULT_CAP: u64 = 4 * 1024 * 1024;
 const MAX_CAP: u64 = 16 * 1024 * 1024;
 
-/// Liest eine Textdatei (UTF-8, Fallback Latin-1) mit Schutz vor Binärdateien.
+/// Читает текст (UTF-8, фолбэк Latin-1), отсекает бинарь.
+/// Reads a text file (UTF-8, Latin-1 fallback) and rejects binaries.
 #[tauri::command]
 pub fn read_text(path: String, max_bytes: Option<u64>) -> Result<EditorRead, Error> {
     let p = Path::new(&path);
@@ -43,7 +49,8 @@ pub fn read_text(path: String, max_bytes: Option<u64>) -> Result<EditorRead, Err
             mtime_ms: mtime,
         }),
         Err(_) => {
-            // Latin-1: 1:1 byte->char, kann verlustfrei zurückgeschrieben werden.
+            // Latin-1: 1:1 byte->char, пишется обратно без потерь.
+        // Latin-1: 1:1 byte->char, writes back losslessly.
             let text = bytes
                 .iter()
                 .map(|&b| char::from_u32(b as u32).unwrap_or('\u{FFFD}'))
@@ -61,7 +68,8 @@ pub fn read_text(path: String, max_bytes: Option<u64>) -> Result<EditorRead, Err
     }
 }
 
-/// Speichert eine Textdatei (atomar via Temp-Datei + Rename).
+/// Сохраняет текст атомарно (временный файл + rename).
+/// Saves a text file atomically (temp file + rename).
 #[tauri::command]
 pub fn save_text(path: String, content: String, expected_mtime: i64) -> Result<SaveResult, Error> {
     let p = Path::new(&path);
@@ -84,7 +92,8 @@ pub fn save_text(path: String, content: String, expected_mtime: i64) -> Result<S
         .ok_or_else(|| Error::new("noParent", "Kein übergeordneter Ordner"))?;
     let tmp = parent.join(format!(".compound_save_{}", uuid::Uuid::new_v4()));
     fs::write(&tmp, content.as_bytes()).map_err(|e| ui_error::io(tmp.display(), e))?;
-    // Rechte der Originaldatei übernehmen.
+    // Права оригинала переносим.
+    // Keep the original file's permissions.
     fs::set_permissions(&tmp, meta.permissions())
         .map_err(|e| ui_error::io(tmp.display(), e))?;
     fs::rename(&tmp, p).map_err(|e| ui_error::io(path.clone(), e))?;

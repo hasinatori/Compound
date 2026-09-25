@@ -1,4 +1,5 @@
-// Formatierungs-Helfer (deutsch-nah, aber sprachunabhängig bei Zahlen).
+// Хелперы вывода: байты, даты, права, мн. число. Без ран.
+// Output helpers: bytes, dates, perms, plural. No runes.
 
 export function formatBytes(n: number): string {
 	if (!Number.isFinite(n) || n < 0) return '–';

@@ -1,3 +1,10 @@
+// Операции над файлами: копировать, переместить, создать, переименовать, корзина.
+// File operations: copy, move, create, rename, trash.
+// Долгое = с register_op + CancelToken, прогресс через Channel.
+// Long ops use register_op + CancelToken, progress over a Channel.
+// Порядок функций = пользовательский поток в UI.
+// Function order mirrors the user flow in the UI.
+
 use crate::fsutil;
 use crate::state::{register_op, unregister_op, AppState, CancelToken};
 use crate::types::*;
@@ -398,7 +405,8 @@ impl OpRunner {
     }
 }
 
-/// `{name, dest}`-Params bauen (für target-Events).
+/// Собирает `{name, dest}` для target-событий.
+/// Builds the `{name, dest}` params for target events.
 trait WithDest {
     fn with_chain(self, dest: &Path) -> std::collections::BTreeMap<String, String>;
 }
@@ -433,7 +441,8 @@ where
     });
 }
 
-/// Summe der Größen (für Fortschritt-Text).
+/// Сумма размеров (для текста прогресса).
+/// Total size (for the progress text).
 fn total_size(srcs: &[String]) -> u64 {
     let mut total = 0u64;
     for s in srcs {
@@ -543,6 +552,7 @@ pub async fn delete_permanent(
     })
 }
 
+// --- Управление долгими операциями / long-op control ---
 #[tauri::command]
 pub fn cancel_op(state: State<'_, AppState>, op_id: String) -> Result<(), Error> {
     let ops = state
@@ -563,7 +573,8 @@ pub struct OpInfo {
     pub created_at_ms: i64,
 }
 
-/// Listet alle noch laufenden Operationen (für das Progress-Dialog-Fenster beim App-Start).
+/// Список идущих операций (окно прогресса при старте приложения).
+/// Lists all running ops (for the progress window on app start).
 #[tauri::command]
 pub fn list_ops(state: State<'_, AppState>) -> Result<Vec<OpInfo>, Error> {
     let ops = state.ops.lock().map_err(|_| ui_error::lock())?;
@@ -601,6 +612,7 @@ pub fn resolve_conflict(
     Ok(())
 }
 
+// --- Создание и переименование / create + rename ---
 #[tauri::command]
 pub fn create_item(
     state: State<'_, AppState>,
@@ -702,6 +714,7 @@ impl OpRunner {
     }
 }
 
+// --- Корзина / trash ---
 #[tauri::command]
 pub fn trash_items(paths: Vec<String>) -> Result<(), Error> {
     let items: Vec<PathBuf> = paths
@@ -865,6 +878,7 @@ pub fn empty_trash() -> Result<(), Error> {
 }
 
 /// Terminal in externer App öffnen (falls vorhanden).
+// --- Внешний терминал / external terminal ---
 #[tauri::command]
 pub fn open_external_terminal(path: String) -> Result<(), Error> {
     let candidates: &[(&str, &[&str])] = &[
@@ -909,7 +923,8 @@ pub fn open_external_terminal(path: String) -> Result<(), Error> {
 
 pub const TRASH_VIRTUAL: &str = "trash://";
 
-/// Fehlerfreie Variante für die Verzeichnisliste (Papierkorb).
+/// Версия без ошибок для списка каталога (корзина).
+/// Infallible variant for directory listing (trash).
 pub fn list_trash_inner() -> Vec<TrashItem> {
     list_trash().unwrap_or_default()
 }

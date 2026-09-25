@@ -1,5 +1,7 @@
-// Typisierte Wrapper um die Rust-Commands (src-tauri/src/lib.rs).
-// Hinweis: Keine Svelte-Runen hier – reine invoke-Logik.
+// Обёртки над Rust-командами (src-tauri/src/lib.rs). Только invoke, без ран.
+// Typed wrappers around the Rust commands. Pure invoke, no runes here.
+// Каналы: прогресс/конфликты летят через Tauri Channel — буферизуем до opId.
+// Channels: progress/conflicts arrive via Tauri Channel — buffer until opId.
 import { invoke, Channel } from '@tauri-apps/api/core';
 import type {
 	AboutInfo,
@@ -27,18 +29,24 @@ import type {
 	TrashItem,
 } from './types';
 
-// Konfliktauflösung: Die App registriert einen Handler; der Conflict-Dialog
-// zeigt die Anfrage an und beantwortet sie über resolveConflict().
+// Разрешение конфликтов: приложение ставит хендлер, диалог
+	// Conflict resolution: the app registers a handler; the conflict dialog
+// показывает запрос и отвечает через resolveConflict().
+	// shows the request and answers it through resolveConflict().
 let conflictHandler: ((req: ConflictRequest) => void) | null = null;
 
 export function setConflictHandler(h: ((req: ConflictRequest) => void) | null) {
 	conflictHandler = h;
 }
 
-// Fortschritt wird gesammelt (Events kommen vor der invoke-Antwort) und
-// nach Bekanntwerden der opId in einem Rutsch an den Store geschoben.
-// `started` wird immer durchgereicht (auch ohne Events), damit der Store
-// die Operation anlegen kann.
+// Прогресс копим (события приходят до ответа invoke) и
+	// Progress is buffered (events arrive before the invoke reply) and
+// после появления opId отдаём пачкой в стор.
+	// flushed into the store in one go once the opId is known.
+// `started` всегда прокидываем (даже без событий), чтобы стор
+	// `started` is always passed through (even with no events) so the store
+// мог завести операцию.
+	// can create the operation.
 let progressHandler: ((opId: string, started: OpStarted, events: ProgressEvent[]) => void) | null = null;
 
 export function setProgressHandler(
@@ -61,6 +69,8 @@ function makeConflictChannel(): Channel<ConflictRequest> {
 	return ch;
 }
 
+// Общая обвязка запуска операции + буфер событий прогресса.
+// Wraps op start + buffers progress events.
 async function runOp(
 	cmd: string,
 	args: Record<string, unknown>,

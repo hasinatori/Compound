@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Настройки: язык, панели, сортировка, подтверждения. Пишет в localStorage.
+	// Settings: language, panels, sorting, confirmations. Stored in localStorage.
 	import Icon from './Icon.svelte';
 	import { uiDialog, closeDialog, settings, saveSettings, lang } from '../stores.svelte';
 	import { t } from '../i18n';

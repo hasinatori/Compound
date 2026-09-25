@@ -1,3 +1,8 @@
+// Поиск: SQLite + FTS5 индекс по именам и содержимому, live-обход как фолбэк.
+// Search: SQLite + FTS5 index over names and content, live walk as fallback.
+// Индекс дифференциальный: не трогаем mtime без изменений.
+// Index is differential: untouched mtimes are skipped.
+
 use crate::fsutil;
 use crate::state::{register_op, unregister_op, AppState, CancelToken};
 use crate::types::*;
@@ -154,7 +159,8 @@ fn run_index(
         let kind = fsutil::kind_for(is_dir, &name);
         let size = if is_file { meta.len() } else { 0 };
 
-        // Text-Inhalt für FTS (nur kleine Text-/Codedateien).
+        // Текст для FTS — только мелкие текстовые/кодовые файлы.
+        // Text content for FTS (small text/code files only).
         let mut text = None;
         if is_file && size > 0 && size <= INDEX_TEXT_CAP && fsutil::is_text_like_kind(&kind) {
             if let Ok(bytes) = fsutil::read_capped(path, INDEX_TEXT_CAP) {
@@ -223,7 +229,8 @@ fn run_index(
 }
 
 fn is_virtual_mount(path: &Path) -> bool {
-    // Grobe Heuristik: /proc, /sys, /dev, /run als Wurzel-Orte nicht indizieren.
+    // Грубая эвристика: /proc, /sys, /dev, /run не индексируем.
+    // Rough heuristic: never index /proc, /sys, /dev, /run as roots.
     let p = path.to_string_lossy();
     p == "/proc" || p == "/sys" || p == "/dev" || p == "/run"
 }
@@ -696,7 +703,8 @@ mod tests {
     #[test]
     fn fts_query_quotes_and_joins_tokens() {
         assert_eq!(fts_query("hallo welt"), "\"hallo\" AND \"welt\"");
-        // Sonderzeichen werden entfernt, Leer-Token gefiltert
+        // Спецсимволы убираем, пустые токены фильтруем.
+        // Strip special chars, drop empty tokens
         assert_eq!(fts_query("foo-bar! 123"), "\"foobar\" AND \"123\"");
         assert_eq!(fts_query("!!!"), "");
     }
@@ -764,10 +772,12 @@ mod tests {
             .unwrap()
             .map(|r| r.unwrap())
             .collect();
-        // FTS5-MATCH mit AND wertet pro Zeile (Name+Inhalt) aus → nur Dokument 1
+        // FTS5-MATCH с AND считает по строке (имя+текст) -> только док 1
+        // FTS5 MATCH with AND evaluates per row (name+content) -> doc 1 only
         assert_eq!(names, vec!["neues Testament"], "nur Zeile 1 muss matchen: {names:?}");
 
-        // Einzelbegriff trifft das andere Dokument
+        // Одно слово цепляет другой документ.
+        // A single term hits the other document
         let query = fts_query("rechnung");
         let mut stmt = db
             .prepare(&format!("SELECT name FROM files WHERE files MATCH '{query}'"))

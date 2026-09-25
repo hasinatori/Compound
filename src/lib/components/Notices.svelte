@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Тосты уведомлений поверх всего. Живут в notices-сторе, гаснут по таймеру.
+	// Notice toasts on top. Live in the notices store, auto-expire on a timer.
 	import Icon from './Icon.svelte';
 	import { notices } from '../stores.svelte';
 

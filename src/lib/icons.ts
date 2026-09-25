@@ -1,4 +1,5 @@
-// Icon-Pfade (lucide-Stil, 24x24, stroke-basiert).
+// Пути иконок в стиле lucide (24x24, stroke). Не менять координаты.
+// Icon paths, lucide style (24x24, stroke). Keep coordinates intact.
 export interface IconDef {
 	paths: string[]; // <path d=...>
 	circles?: Array<[number, number, number]>;

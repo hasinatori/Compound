@@ -1,7 +1,7 @@
 {
   "name": "compound",
   "version": "1.0.0",
-  "description": "Compound – ein eigener, flotter Dateimanager (Tauri, Linux zuerst, dann Windows)",
+  "description": "Compound – a fast, self-built file manager (Tauri). By Sam (S4m), Димитрий (дима), Наталья (натя), Jake (JK)",
   "type": "module",
   "scripts": {
     "dev": "vite dev",

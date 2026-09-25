@@ -1,3 +1,10 @@
+//! Глобальное состояние приложения: панели-операции, токены отмены, БД.
+//! Global app state: running ops, cancel tokens, DB handle.
+//! Сюда кладём то, что должно жить между вызовами команд.
+//! Anything that must survive between command calls goes here.
+//! register_op/unregister_op — пара для учёта долгих операций.
+//! register_op/unregister_op — the bookkeeping pair for long operations.
+
 use crate::types::ConflictChoice;
 use notify::RecommendedWatcher;
 use rusqlite::Connection;
@@ -49,13 +56,16 @@ pub struct AppState {
     pub cache_dir: PathBuf,
     /// SQLite-Verbindung (Index/Dedup/Suche).
     pub db: Mutex<Option<Connection>>,
-    /// Laufende Operationen (op_id -> Handle), für Cancel.
+    /// Идущие операции (op_id -> Handle) для отмены.
+    /// Running operations (op_id -> handle), used for cancel.
     pub ops: Mutex<HashMap<String, OpHandle>>,
-    /// Warteschlange für Konflikt-Antworten (op_id:key -> Sender).
+    /// Очередь ответов по конфликтам (op_id:key -> Sender).
+    /// Queue of conflict answers (op_id:key -> sender).
     pub conflict_waiters: Mutex<HashMap<String, mpsc::Sender<ConflictChoice>>>,
     /// Indizierung läuft bereits (globale Sperre).
     pub indexing: Mutex<()>,
-    /// Verzeichnis-Watcher für Auto-Refresh (in V-1.0 stets ungenutzt, reserviert).
+    /// Вотчер каталогов для авто-обновления (в v1.0 не используется, резерв).
+    /// Directory watcher for auto-refresh (unused in v1.0, reserved).
     #[allow(dead_code)]
     pub watcher: Mutex<Option<RecommendedWatcher>>,
     /// Terminal-Sitzungen (id -> Session).
@@ -125,6 +135,8 @@ fn open_db(data_dir: &std::path::Path) -> Result<Connection, crate::ui_error::Er
     Ok(conn)
 }
 
+// Регистрируем новую операцию: отдаём id + токен отмены.
+// Register a new op: hand back its id + cancel token.
 pub fn register_op(state: &AppState, kind: &str) -> (String, CancelToken) {
     let id = uuid::Uuid::new_v4().to_string();
     let token = CancelToken::default();

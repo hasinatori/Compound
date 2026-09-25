@@ -1,3 +1,8 @@
+// Инструменты: дубликаты по хэшу, сравнение папок, массовое переименование.
+// Tools: hash-based duplicates, folder compare, mass rename.
+// Правила переименования применяем без перезаписи — только считаем и preview.
+// Rename rules are applied to a copy — we only count and preview.
+
 use crate::fsutil;
 use crate::state::{register_op, unregister_op, AppState, CancelToken};
 use crate::types::*;

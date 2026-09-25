@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Сайдбар: места (диски/домашки), корзина, закладки. Клик = навигация.
+	// Sidebar: places (disks/homes), trash, bookmarks. Click = navigate.
 	import Icon from './Icon.svelte';
 	import { t } from '../i18n';
 	import type { Place } from '../types';

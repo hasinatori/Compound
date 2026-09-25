@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Инструменты: дубликаты, сравнение папок, массовое переименование.
+	// Tools: duplicates, folder compare, mass rename.
+	// Правила переименования собираются здесь, считает и превью — backend.
+	// Rename rules are assembled here; counting + preview run in the backend.
 	import Icon from './Icon.svelte';
 	import {
 		uiDialog,
@@ -29,9 +33,13 @@
 	// ---- Duplikate ----
 	let dupRunning = $state(false);
 	let dupGroups = $state<DuplicateGroup[]>([]);
-	let dupRoot = $state(baseDir);
+	// $state(baseDir) ВМЕСТО $state('') ВАЖНО: derived читается только в $effect,
+	// иначе значение застывает на момент монтирования.
+	// $state(baseDir) instead of $state('') matters: a derived may only be read
+	// inside an effect, otherwise the value freezes at mount time.
+	let dupRoot = $state('');
 	$effect(() => {
-		if (d) dupRoot = (focusedPanel.value === 0 ? panelA : panelB).cwd;
+		if (d) dupRoot = baseDir;
 	});
 
 	async function runDup() {
@@ -62,8 +70,18 @@
 
 	// ---- Vergleich ----
 	let cmpRunning = $state(false);
-	let cmpA = $state(baseDir);
-	let cmpB = $state(baseDir);
+	// Те же два начальных значения читаем в $effect, а не при инициализации:
+	// иначе «Сравнить» стартует со старым каталогом панели.
+	// Seed both paths inside an effect for the same reason: otherwise Compare
+	// starts from the panel's stale directory.
+	let cmpA = $state('');
+	let cmpB = $state('');
+	$effect(() => {
+		if (d) {
+			cmpA = baseDir;
+			cmpB = baseDir;
+		}
+	});
 	let cmpDeep = $state(true);
 	let cmpItems = $state<CompareItem[]>([]);
 

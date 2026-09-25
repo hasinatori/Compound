@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Встроенный терминал (xterm.js поверх terminal_cmd / pty).
+	// Built-in terminal (xterm.js on top of terminal_cmd / pty).
 	import Icon from './Icon.svelte';
 	import { setView, terminalStartCwd } from '../stores.svelte';
 	import { terminalOpen, terminalWrite, terminalResize, terminalClose } from '../api';
@@ -104,7 +106,8 @@
 				try {
 					fitAddon?.fit();
 				} catch {
-					// Term nicht sichtbar
+					// Терминал не виден.
+					// Terminal not visible
 				}
 			});
 			resizeObs.observe(el);

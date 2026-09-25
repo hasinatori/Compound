@@ -1,4 +1,9 @@
-// Globale Laufzeit-Zustände (Svelte-5-Runen; Dateiendung .svelte.ts erforderlich).
+// Глобальные ран-сторы (Svelte 5). Расширение .svelte.ts обязательно.
+// Global rune stores (Svelte 5). The .svelte.ts extension is mandatory.
+// Правило: экспортируем $state-объекты (.value) + сеттеры, НЕ ран напрямую.
+// Rule: export $state objects (.value) + setters, never the rune itself.
+// Настройки и закладки лежат в localStorage — ключи ниже.
+// Settings + bookmarks live in localStorage — see keys below.
 import { invoke } from '@tauri-apps/api/core';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import type {
@@ -29,24 +34,29 @@ export function saveSettings(s: Settings) {
 	try {
 		localStorage.setItem(STORE_KEY, JSON.stringify(s));
 	} catch {
-		// localStorage nicht verfügbar -> ignorieren
+		// localStorage недоступен -> молча игнорим.
+	// localStorage unavailable -> ignore silently
 	}
 }
 
 export const settings = $state<Settings>(loadSettings());
 
-/// Aktive UI-Sprache (für i18n t()).
+/// Активный язык UI (для i18n t()).
+/// Active UI language (for i18n t()).
 export function lang() {
 	return settings.language;
 }
 
-// ---- Fehler- und Op-Label-Lokalisierung ----
+// ---- Локализация ошибок и подписей операций ----
+// ---- Error + op-label localization ----
 
 /**
  * Wandelt einen Backend-Fehler (`{code, params}`) in den lokalisierten
  * UI-Text um. Unbekannte Codes -> englischer Fallback, reine Strings
  * passieren unverändert (Frontend-seitige Fehler).
  */
+// Ошибка из Rust -> human text: errors.<code> + params, fallback EN.
+// Rust error -> human text: errors.<code> + params, English fallback.
 export function errMsg(e: unknown): string {
 	if (e && typeof e === 'object' && typeof (e as AppErr).code === 'string') {
 		const err = e as AppErr;
@@ -67,6 +77,8 @@ export function renderOpLabel(kind: string, params: Record<string, string | numb
 	return t(`op.${kind}`, lang(), params);
 }
 
+// Черновик панели: пустое состояние на указанном cwd.
+// Draft panel state: empty, rooted at the given cwd.
 export function draftPanel(cwd: string): PanelState {
 	return {
 		cwd,
@@ -89,8 +101,11 @@ export const panelB = $state<PanelState>(draftPanel('/home/sam'));
 
 export type ViewName = 'browser' | 'editor' | 'terminal' | 'search' | 'tools' | 'settings';
 
-// Svelte erlaubt das Exportieren von reassignierten Runes nicht.
+// Svelte не даёт экспортировать переприсваиваемые руны.
+// Svelte forbids exporting reassigned runes.
 // Deshalb liegen veränderliche Werte in $state-Objekten (.value) + Setter-Funktionen.
+// Глобальный переключатель вида + активная панель (0=левая, 1=правая).
+// Global view switcher + which panel has focus (0=left, 1=right).
 export const view = $state<{ value: ViewName }>({ value: 'browser' });
 export function setView(v: ViewName) {
 	view.value = v;
@@ -154,10 +169,12 @@ export function setClipboard(paths: string[], cut: boolean) {
 // Laufende Operationen: opId -> Zustand.
 export const ops = $state<Record<string, OpState>>({});
 
-// Aktiver Konflikt (wird vom ConflictDialog bearbeitet).
+// Активный конфликт (обрабатывает ConflictDialog).
+// Active conflict (handled by ConflictDialog).
 export const pendingConflict = $state<ConflictRequest | null>(null);
 
-// Modal-Dialoge der App: kind steuert, welcher Dialog gerendert wird.
+// Модальные диалоги: kind решает, какой рендерится.
+// App modal dialogs: kind decides which one renders.
 export interface UIDialog {
 	kind:
 		| 'newitem'
@@ -223,7 +240,8 @@ export function opFinish(opId: string, ok: boolean, error: string | null) {
 	}
 }
 
-/** abgelaufene Ops automatisch nach einigen Sekunden aus der Liste entfernen */
+/** убирает протухшие операции из списка через несколько секунд
+/** drops expired ops from the list after a few seconds */
 export function sweepOps() {
 	for (const k of Object.keys(ops)) {
 		if (ops[k].done) {

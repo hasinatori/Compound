@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Диалог переименования (файл или папка). Инлайн-вариант — в Panel.
+	// Rename dialog (file or folder). The inline variant lives in Panel.
 	import Icon from './Icon.svelte';
 	import { uiDialog, closeDialog, notify, lang, errMsg } from '../stores.svelte';
 	import { t } from '../i18n';

@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Правая инфо-полоса: свойства файла, свободное место, счётчики.
+	// Info sidebar: file properties, free space, counters.
+	// В однопанельном режиме вешается справа от списка.
+	// In single-panel mode it sits to the right of the list.
 	import Icon from './Icon.svelte';
 	import type { PanelState, FileEntry } from '../types';
 	import { settings, lang } from '../stores.svelte';

@@ -1,23 +1,34 @@
 # Compound
 
-Ein eigener, flotter Dateimanager für den Desktop. **Tauri 2 + Svelte 5 (TypeScript)**, Linux zuerst, dann Windows.
+A fast, self-built desktop file manager. **Tauri 2 + Svelte 5 (TypeScript)** — Linux first, then Windows.
 
-## Funktionen
+## Credits
 
-- **Navigation**: Ein- oder Zwei-Panel-Ansicht, Breadcrumb, Verlauf (zurück/vor), Lesezeichen, Sortieren (Name/Endung/Größe/Datum), Liste oder Kacheln
-- **Datei-Operationen**: Kopieren, Verschieben (mit Konflikt-Dialog und „Beide behalten"), Duplizieren, Umbenennen (inline und per Dialog), Neue Datei/Ordner, in den Papierkorb, endgültiges Löschen, Wiederherstellen aus dem Papierkorb (`trash://`-Ansicht), OS-Drag&Drop-Import
-- **Suche**: Differential-Index in SQLite (FTS5) mit Dateinamen- und Textinhalt-Suche, Live-Suche ohne Index als Fallback
-- **Editor**: CodeMirror 6 mit Syntax-Highlighting (Rust, JavaScript/TypeScript, Python, JSON, Markdown, CSS, HTML/XML, SQL), Latin-1-Erkennung, Konflikt-Schutz bei externer Änderung, Abbruch bei Binär-/Riesen-Dateien
-- **Terminal**: integrierte interaktive Shell (xterm.js + portable-pty) oder externes Terminal (Kitty etc.)
-- **Werkzeuge**: Duplikat-Finder (Hash-basiert), Ordner-Vergleich, Massen-Umbenennen (Ersetzen/RegEx/Entfernen/Einfügen/Case/Endung/Nummerierung) mit Vorschau
-- **Archive**: Erstellen und Entpacken von zip / tar / tar.gz / tar.bz2 / tar.xz, 7z über systemweites `7z` (falls vorhanden)
-- **UI**: Deutsches und englisches Interface, dunkles Theme, Tastaturkürzel (F5 Refresh, F2 Umbenennen, Ctrl+F Suche, Ctrl+N Neue Datei, Delete → Papierkorb, Ctrl+D → Löschen, Tab Panel-Wechsel, Alt+←/→/↑ Navigation)
+Built by:
 
-## Voraussetzungen (Linux)
+| Who | Nick |
+|-----|------|
+| Sam | **S4m** |
+| Димитрий | **дима** |
+| Наталья | **натя** |
+| Jake | **JK** |
 
-- Linux mit WebKit2Gtk 4.1, GTK3, glibc ≥ 2.41 (aktuelle Distributionen)
-- Rust ≥ 1.77, Node ≥ 20, pnpm
-- Archive: `7z` (zusätzlich), `tar`, `xz`, `bzip2` (Voreinstellung des Systems)
+## Features
+
+- **Navigation**: one- or two-panel view, breadcrumb, history (back/forward), bookmarks, sorting (name/ext/size/date), list or grid
+- **File ops**: copy, move (with conflict dialog + "keep both"), duplicate, rename (inline + dialog), new file/folder, to trash, permanent delete, restore from trash (`trash://` view), OS drag & drop import
+- **Search**: differential index in SQLite (FTS5) over file names and text content, live search without index as fallback
+- **Editor**: CodeMirror 6 with syntax highlighting (Rust, JS/TS, Python, JSON, Markdown, CSS, HTML/XML, SQL), Latin-1 detection, conflict guard on external change, abort on binary/huge files
+- **Terminal**: built-in interactive shell (xterm.js + portable-pty) or external terminal (kitty etc.)
+- **Tools**: duplicate finder (hash based), folder compare, mass rename (replace/regex/remove/insert/case/ext/numbering) with preview
+- **Archives**: create and extract zip / tar / tar.gz / tar.bz2 / tar.xz, 7z via system `7z` (if present)
+- **UI**: German and English interface, dark theme, keyboard shortcuts (F5 refresh, F2 rename, Ctrl+F search, Ctrl+N new file, Delete → trash, Ctrl+D → delete, Tab switch panel, Alt+←/→/↑ navigation, Backspace → parent dir, Alt+Ctrl+←/→ move selection to the other panel, Space mark, Enter move marked into focused panel)
+
+## Requirements (Linux)
+
+- Linux with WebKit2Gtk 4.1, GTK3, glibc >= 2.41 (current distros)
+- Rust >= 1.77, Node >= 20, pnpm
+- Archives: `7z` (extra), `tar`, `xz`, `bzip2` (system default)
 
 CachyOS/Arch:
 
@@ -25,65 +36,105 @@ CachyOS/Arch:
 sudo pacman -S --needed base-devel webkit2gtk-4.1 gtk3 librsvg libappindicator-gtk3 7zip
 ```
 
-## Entwicklung
+## Development
 
 ```bash
 pnpm install
-pnpm dev          # Vite-Devserver + tauri dev (pnpm tauri dev)
+pnpm dev          # Vite dev server + tauri dev
 pnpm check        # svelte-check
-pnpm build        # Vite-Build des Frontends
+pnpm build        # frontend-only Vite build
 ```
 
-Backend-Tests:
+Backend tests:
 
 ```bash
 cd src-tauri && cargo test
-cargo check       # statische Prüfung
+cargo check       # static check
 ```
 
-## Build & Pakete
+## Build & packages
 
 ```bash
 pnpm tauri build                    # deb + AppImage (Linux)
-pnpm tauri build --bundles deb      # nur .deb (Debian/Ubuntu)
-pnpm tauri build --bundles appimage # nur .appimage (universell)
+pnpm tauri build --bundles deb      # .deb only (Debian/Ubuntu)
+pnpm tauri build --bundles appimage # .appimage only (universal)
 ```
 
-Ausgabe:
+Output:
 
 - `src-tauri/target/release/bundle/deb/Compound_1.0.0_amd64.deb`
 - `src-tauri/target/release/bundle/appimage/Compound_1.0.0_amd64.AppImage`
 
-AppImage installieren (ohne Installation):
+Run the AppImage without installing:
 
 ```bash
 chmod +x Compound_1.0.0_amd64.AppImage
 ./Compound_1.0.0_amd64.AppImage
 ```
 
-## Architektur
+## Architecture
 
 ```
 frontend (Svelte 5, Vite)
-  src/lib/stores.svelte.ts   globale Runes-Zustände (Panels, Ops, Clipboard, Dialoge)
-  src/lib/api.ts             typisierte invoke-Wrapper um die Rust-Commands
-  src/lib/components/…       Panels, Dialoge, Editor (CodeMirror), Terminal (xterm.js)
+  src/App.svelte                  app shell: layout, global keymap, view switch
+  src/lib/stores.svelte.ts        global rune state (panels, ops, clipboard, dialogs)
+  src/lib/api.ts                  typed invoke wrappers around the Rust commands
+  src/lib/i18n.ts                 de/en strings + t() lookup
+  src/lib/components/Panel.svelte one file panel: list, selection, context menu
+  src/lib/components/…            dialogs, editor (CodeMirror), terminal (xterm.js)
 
 backend (Rust, Tauri 2)
-  src-tauri/src/lib.rs       33 Commands registriert
-  fs_cmd.rs, ops_cmd.rs      Navigation, Datei-Operationen, Papierkorb (trash://)
-  search_cmd.rs              SQLite/FTS5-Index
-  archive_cmd.rs             zip/tar-Gzip/Bzip2/Xz, 7z via CLI
+  src-tauri/src/lib.rs            registers all commands
+  fs_cmd.rs, ops_cmd.rs           navigation, file ops, trash (trash://)
+  search_cmd.rs                   SQLite / FTS5 index
+  archive_cmd.rs                  zip/tar/gzip/bzip2/xz, 7z via CLI
   editor_cmd.rs, terminal_cmd.rs, tools_cmd.rs, misc_cmd.rs
 ```
 
-Wichtige Konventionen:
+### File map — what each file is for
 
-- Svelte-Runen dürfen aus Modulen nicht reassigned exportiert werden → veränderliche Werte liegen in `$state`-Objekten (`.value`) plus Setter-Funktionen (z. B. `view.value`, `setView(…)`). `.svelte.ts`-Dateiendung für Rune-Stores ist Pflicht.
-- Der Fortschritt läuft über Tauri-`Channel`s; das Frontend puffert Events und setzt sie nach Bekanntwerden der `opId` in den Op-Store (`setProgressHandler` legt die Op bei `OpStarted` an — kein `label` mehr, sondern `kind`; Labels rendert `renderOpLabel` aus `op.*`-i18n-Keys + Params).
-- Konflikte kommen als `ConflictRequest` über einen Channel und werden vom `PendingConflict`-Dialog beantwortet (`resolve_conflict`).
-- Fehler über Commands sind **lokalisiert**: Das Backend sendet nur `{code, params}` (`src-tauri/src/ui_error.rs`); die UI übersetzt über `errors.*`-i18n-Keys (`errMsg` in stores.svelte.ts, englischer Fallback bei unbekannten Codes). Unbekannte/`{code, params}`-fremde Fehler zeigen den `errors.unknown`-Text. Deutsche Texte existieren nur im Backend-Log (`Display`-Implementierung). Hinweis: Der Toast-Stil ist unverändert geblieben (Umsetzung nur der Textebene).
+Comments inside the sources are short bilingual (RU + EN) reminders of intent, not documentation.
+`sprache/language`: RU first, EN second; abbreviations are deliberate (`спс` = спасибо, `TH` = thank you,
+`пжл` = пожалуйста, `pls` = please, `дир` = директория, `ист` = источник).
 
-## Lizenz
+| File | Purpose / коротко |
+|------|------------------|
+| `src/main.ts` | mounts App into #app / монтирует App |
+| `src/App.svelte` | shell + global keys / оболочка + глобальные хоткеи |
+| `src/lib/api.ts` | invoke wrappers / обёртки над Rust-командами |
+| `src/lib/stores.svelte.ts` | global state / глобальное состояние |
+| `src/lib/types.ts` | TS mirror of Rust types / TS-зеркало Rust-типов |
+| `src/lib/i18n.ts` | de/en strings / строки de/en |
+| `src/lib/format.ts` | bytes, dates, perms, plurals / байты, даты, права |
+| `src/lib/sort.ts` | shared entry sort / общая сортировка |
+| `src/lib/icons.ts` | lucide-style icon paths / пути иконок |
+| `src/lib/global.css` | dark theme + layout / тёмная тема + layout |
+| `src/lib/components/Panel.svelte` | the file panel / файловая панель |
+| `src/lib/components/*Dialog.svelte` | dialogs / диалоги |
+| `src-tauri/src/lib.rs` | command registry / реестр команд |
+| `src-tauri/src/state.rs` | app state, ops, cancel tokens / состояние, операции |
+| `src-tauri/src/fs_cmd.rs` | list_dir, places, disk usage / листинг, диски |
+| `src-tauri/src/fsutil.rs` | fs helpers / хелперы ФС |
+| `src-tauri/src/ops_cmd.rs` | copy/move/delete/rename/trash / оп-ции над файлами |
+| `src-tauri/src/search_cmd.rs` | FTS5 index + search / индекс FTS5 |
+| `src-tauri/src/archive_cmd.rs` | zip/tar/7z / архивы |
+| `src-tauri/src/tools_cmd.rs` | dupes, compare, mass rename / дубли, сравнение, переименование |
+| `src-tauri/src/editor_cmd.rs` | read/save text with mtime guard / чтение и запись |
+| `src-tauri/src/terminal_cmd.rs` | pty sessions / pty-сессии |
+| `src-tauri/src/ui_error.rs` | localized {code, params} errors / локализованные ошибки |
+| `src-tauri/src/types.rs` | serde types / serde-типы |
+
+> Note: `package.json`, `tauri.conf.json`, `capabilities/*.json` stay comment-free on purpose —
+> they are strict JSON and a comment would break the parser. `pnpm-lock.yaml`, `Cargo.lock`
+> and `src-tauri/gen/` are generated, never edited by hand.
+
+## Conventions
+
+- Svelte runes must not be reassigned across modules → mutable values live in `$state` objects (`.value`) plus setter functions (e.g. `view.value`, `setView(…)`). The `.svelte.ts` suffix is mandatory for rune stores.
+- Progress flows over Tauri `Channel`s; the frontend buffers events and assigns them to the op store once the `opId` is known (`setProgressHandler` creates the op at `OpStarted`; labels come from `renderOpLabel` with `op.*` i18n keys + params).
+- Conflicts arrive as a `ConflictRequest` over a channel and are answered by the conflict dialog (`resolve_conflict`).
+- Command errors are **localized**: the backend only sends `{code, params}` (`src-tauri/src/ui_error.rs`); the UI translates via `errors.*` keys (`errMsg` in `stores.svelte.ts`, English fallback for unknown codes). German text exists only in the backend log (`Display` impl).
+
+## License
 
 MIT

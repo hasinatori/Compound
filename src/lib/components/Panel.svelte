@@ -1,4 +1,10 @@
 <script lang="ts">
+	// Одна файловая панель: список, выделение, контекст-меню, инлайн-переименование.
+	// One file panel: list, selection, context menu, inline rename.
+	// Левый клик меняет фокус панели; dbl-click открывает папку/файл.
+	// Left click sets panel focus; dbl-click opens a folder/file.
+	// Выделение = p.selected, p.activeIndex — двигают хоткеи и Enter.
+	// Selection lives in p.selected / p.activeIndex — keys and Enter read those.
 	import Icon from './Icon.svelte';
 	import Breadcrumb from './Breadcrumb.svelte';
 	import type { FileEntry, PanelState } from '../types';
@@ -51,7 +57,8 @@
 		}
 	}
 
-	// ---- Virtualisierung (nur Listenansicht) ----
+	// ---- Виртуализация (только вид списком) ----
+	// ---- Virtualization (list view only) ----
 	let scrollEl = $state<HTMLDivElement | null>(null);
 	let viewportEl = $state<HTMLDivElement | null>(null);
 	let scrollTop = $state(0);
@@ -96,7 +103,8 @@
 			if (i >= 0) p.selected.splice(i, 1);
 			else p.selected.push(row.path);
 		} else if (e.shiftKey) {
-			// Bereich von aktiver Zeile bis hier
+			// Диапазон от активной строки до сюда.
+		// Range from the active row down to here
 			const anchor = p.activeIndex;
 			const lo = Math.min(anchor, idx);
 			const hi = Math.max(anchor, idx);
@@ -112,7 +120,8 @@
 	/// Tastaturaktivierung einer Zeile/Kachel (Enter öffnet, Leertaste wählt).
 	function onRowKeydown(e: KeyboardEvent, row: FileEntry, idx: number) {
 		if (e.key !== 'Enter' && e.key !== ' ') return;
-		// Globalen Window-Handler nicht doppelt auslösen lassen.
+		// Не даём глобальному хендлеру сработать дважды.
+		// Don't let the global window handler fire twice
 		e.stopPropagation();
 		e.preventDefault();
 		if (e.key === 'Enter') {
@@ -130,7 +139,8 @@
 		}
 	}
 
-	// Tastatur auf den Zeilen (Enter, Pfeile, etc.)
+	// Клавиатура по строкам (Enter, стрелки и т.д.).
+	// Keyboard handling on the rows (Enter, arrows, ...)
 	let focusedIdx = $state(0);
 	function scrollToIdx(idx: number) {
 		if (!scrollEl) return;
@@ -145,7 +155,8 @@
 
 	function onCtx(e: MouseEvent, entry: FileEntry | null) {
 		e.preventDefault();
-		// Rechtsklick auf nicht ausgewählte Zeile: Auswahl setzen
+		// ПКМ по невыделенной строке: сначала выделяем её.
+			// Right-click on an unselected row: select it first
 		if (entry && !p.selected.includes(entry.path)) {
 			p.selected = [entry.path];
 		}

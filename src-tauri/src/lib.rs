@@ -1,3 +1,10 @@
+//! Сборка Tauri-приложения: тут регистрируются все команды.
+//! Tauri app assembly: every command is registered here.
+//! Новую #[tauri::command] — не забудь добавить в invoke_handler ниже.
+//! New #[tauri::command] -> do not forget to add it to invoke_handler below.
+//! Порядок в invoke_handler = порядок чтения, держим по модулям.
+//! Order in invoke_handler = reading order, keep it grouped by module.
+
 mod archive_cmd;
 mod editor_cmd;
 mod fs_cmd;

@@ -1,6 +1,10 @@
-// TS-Spiegel der Rust-Typen (src-tauri/src/types.rs), inkl. serde camelCase.
+// TS-зеркало Rust-типов (src-tauri/src/types.rs), serde camelCase.
+// TS mirror of the Rust types, serde camelCase on the wire.
+// Меняем Rust-тип -> меняем тут же, иначе рантайм-тихо разъедется.
+// Change a Rust type -> change it here too, else runtime drifts silently.
 
-/** Lokalisierbarer Fehler vom Backend: `code` -> i18n-Key `errors.<code>`. */
+// Локализованная ошибка от Rust: code -> i18n-ключ errors.<code>.
+// Localized error from Rust: code -> i18n key errors.<code>.
 export interface AppErr {
 	code: string;
 	params: Record<string, string>;

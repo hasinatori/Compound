@@ -1,4 +1,5 @@
-// Minimal-Internalisierung: flache Pfad-Lookup mit DE/EN.
+// Мини-i18n: плоский поиск по ключу, de/en. Плейсхолдеры вида {name}.
+// Mini-i18n: flat key lookup, de/en. Placeholders look like {name}.
 import type { Settings } from './types';
 
 const dict = {
@@ -264,7 +265,8 @@ const dict = {
 		'notice.extracted': 'Extrahiert: {n} Einträge.',
 		'notice.selectOneFile': 'Bitte genau eine Datei im Panel auswählen.',
 
-		// Lokalisierte Fehlercodes (Backend sendet nur {code, params}).
+		// Локализованные коды ошибок (backend шлёт только {code, params}).
+		// Localized error codes (the backend only sends {code, params}).
 		'errors.unknown': 'Ein unbekannter Fehler ist aufgetreten.',
 		'errors.io': 'I/O-Fehler: {path}: {detail}',
 		'errors.db': 'Datenbankfehler: {err}',
@@ -680,6 +682,8 @@ const dict = {
 
 export type Lang = keyof typeof dict;
 
+// Основной перевод. Нет ключа -> возвращаем сам ключ (видно в UI как баг).
+// Main lookup. Missing key -> returns the raw key (visible in the UI as a bug).
 export function t(key: string, lang: Lang, params: Record<string, string | number> = {}): string {
 	const table = (dict[lang] ?? dict.de) as unknown as Record<string, string>;
 	const nested = (dict[lang] as unknown as Record<string, unknown>) ?? dict.de;
@@ -710,10 +714,14 @@ export function t(key: string, lang: Lang, params: Record<string, string | numbe
 	return key;
 }
 
+// Хелпер: прибивает язык на время жизни компонента.
+// Helper: pins the language for the component's lifetime.
 export function makeT(lang: () => 'de' | 'en') {
 	return (key: string, params: Record<string, string | number> = {}) => t(key, lang(), params);
 }
 
+// Настройки по умолчанию. Поля = ключи Settings в types.ts.
+// Default settings. Fields must match the Settings interface in types.ts.
 export const defaultSettings = (): Settings => ({
 	language: 'de',
 	singlePanel: false,

@@ -1,4 +1,6 @@
 <script lang="ts">
+	// Архивы: создать/распаковать zip|tar|gz|bz2|xz, список содержимого.
+	// Archives: create/extract zip|tar|gz|bz2|xz, list contents.
 	import Icon from './Icon.svelte';
 	import {
 		uiDialog,

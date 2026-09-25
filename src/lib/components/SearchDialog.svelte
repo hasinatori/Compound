@@ -1,4 +1,8 @@
 <script lang="ts">
+	// Поиск: имя + содержимое, по индексу FTS5 или live-обходом.
+	// Search: names + content, via the FTS5 index or a live walk.
+	// Долгий поиск отменяем через cancel_op.
+	// Long searches are cancelled through cancel_op.
 	import Icon from './Icon.svelte';
 	import {
 		uiDialog,
